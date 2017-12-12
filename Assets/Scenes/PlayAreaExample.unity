@@ -693,6 +693,7 @@ GameObject:
   m_Component:
   - component: {fileID: 853810109}
   - component: {fileID: 853810108}
+  - component: {fileID: 853810110}
   m_Layer: 0
   m_Name: GameState
   m_TagString: Untagged
@@ -711,6 +712,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c19dda008a20a54c8a3f8341da7b367, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  NumberOfLevels: 1
+  NumberOfRounds: 3
+  levelManager: {fileID: 853810110}
   pushButtonSurfaces:
   - {fileID: 379735119}
 --- !u!4 &853810109
@@ -726,6 +730,17 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &853810110
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 853810107}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89ec4b42f89bef045aad924044640d6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1605050458
 GameObject:
   m_ObjectHideFlags: 0

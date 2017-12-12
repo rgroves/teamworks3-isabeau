@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Text;
 
 public class PushButtonSurface : MonoBehaviour {
     private const string pushButtonTag = "PushButton";
@@ -40,7 +41,6 @@ public class PushButtonSurface : MonoBehaviour {
         {
             int randomIdx = Random.Range(0, pushButtons.Count);
             winPattern.Add(randomIdx);
-            Debug.Log("\tPicked: " + randomIdx);
         }
     }
 
@@ -48,11 +48,14 @@ public class PushButtonSurface : MonoBehaviour {
     {
         // TODO this should light up the push buttons in the sequence stored in the win pattern. For now just logging details for simulation purposes.
 
-        Debug.Log("This is the win pattern:");
+        StringBuilder dbg = new StringBuilder("This is the win pattern: ");
         for (int i = 0; i < winPattern.Count; i++)
         {
             pushButtons[winPattern[i]].GetComponent<PushButton>().Glowing = true;
-            Debug.Log("\tPush " + (i + 1) + ": " + winPattern[i]);
+
+            dbg.Append(winPattern[i]);
+            dbg.Append((i < winPattern.Count - 1) ? ", " : "");
         }
+        Debug.Log(dbg);
     }
 }
