@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
 public class GameState : MonoBehaviour {
     // The number of levels for each game.
@@ -30,6 +32,7 @@ public class GameState : MonoBehaviour {
         GenerateWinPattern,
         ShowWinPattern,
         CollectPlayerInput,
+        CheckPlayerGuess,
         EndGame
     }
 
@@ -39,8 +42,13 @@ public class GameState : MonoBehaviour {
     // TODO
     int curWinPatternIdx = 0;
 
+    Queue<GameObject> playerGuesses;
+    int guessResult;
+    float timeOfLastGuess;
+
     // Use this for initialization
     void Start () {
+        playerGuesses = new Queue<GameObject>();
         currentState = State.NewGame;
     }
 
@@ -50,6 +58,9 @@ public class GameState : MonoBehaviour {
         {
             case State.NewGame:
                 levelManager.NewGame(NumberOfLevels, NumberOfRounds);
+                playerGuesses.Clear();
+                curWinPatternIdx = 0;
+                timeOfLastGuess = 0;
                 currentState = State.NewLevel;
                 break;
 
@@ -97,6 +108,38 @@ public class GameState : MonoBehaviour {
                         State.ShowWinPattern : State.CollectPlayerInput;
                 break;
 
+            case State.CollectPlayerInput:
+                if (guessResult == 3) 
+                {
+                    if (playerGuesses.Count > 0)
+                    {
+                        currentState = State.CheckPlayerGuess;
+                    }
+                    else if (Time.time - timeOfLastGuess > 1)
+                    {
+                        currentState = State.NewRound;
+                        guessResult = 0;
+                    }
+                }
+                break;
+
+            case State.CheckPlayerGuess:
+                guessResult = playSurface.CheckPlayerGuess(playerGuesses.Dequeue());
+
+                switch (guessResult)
+                {
+                    case 1:
+                        currentState = State.CollectPlayerInput;
+                        break;
+                    case 3:
+                        currentState = State.CollectPlayerInput;
+                        break;
+                    default:
+                        currentState = State.EndGame;
+                        break;
+                }
+                break;
+
             case State.EndGame:
 #if UNITY_EDITOR
                 UnityEditor.EditorApplication.isPlaying = false;
@@ -105,25 +148,19 @@ public class GameState : MonoBehaviour {
         }
     }
 
-    public void OnButtonPush(GameObject gameObject)
+    public void OnButtonPush(GameObject buttonPushed)
     {
         Debug.Log("here");
+
         if (currentState != State.CollectPlayerInput)
         {
             return;
         }
 
-        int result = playSurface.CheckPlayerGuess(gameObject);
-        switch (result)
-        {
-            case 1:
-                break;
-            case 3:
-                currentState = State.NewRound;
-                break;
-            default:
-                currentState = State.EndGame;
-                break;
-        }
+        timeOfLastGuess = Time.time;
+
+        playerGuesses.Enqueue(buttonPushed);
+
+        currentState = State.CheckPlayerGuess;
     }
 }
