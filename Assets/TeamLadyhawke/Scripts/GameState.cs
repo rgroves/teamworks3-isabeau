@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class GameState : MonoBehaviour {
     // The number of levels for each game.
@@ -20,6 +18,9 @@ public class GameState : MonoBehaviour {
     // The current level's play surface.
     private PushButtonSurface playSurface;
 
+    // Number of button pushes needed to win for this round.
+    private int numberOfButtonPushesToWin;
+
      // Game States
     private enum State
     {
@@ -34,6 +35,9 @@ public class GameState : MonoBehaviour {
 
     // The current game state.
     private State currentState;
+
+    // TODO
+    int curWinPatternIdx = 0;
 
     // Use this for initialization
     void Start () {
@@ -71,7 +75,7 @@ public class GameState : MonoBehaviour {
                 playSurface = pushButtonSurfaces[level - 1].GetComponent<PushButtonSurface>();
 
                 // Set number of button pushes that should be in the win pattern for this level/round.
-                int numberOfButtonPushesToWin = (2 * playSurface.PushButtonCount) + (round - 2);
+                numberOfButtonPushesToWin = (2 * playSurface.PushButtonCount) + (round - 2);
 
                 Debug.Log(">>> " + levelManager.CurrentLevelRound + ", Pushes To Win: " + numberOfButtonPushesToWin + " <<<");
 
@@ -79,16 +83,18 @@ public class GameState : MonoBehaviour {
                 // button pushes the player must make to win.
                 playSurface.GenerateWinPattern(numberOfButtonPushesToWin);
 
+                curWinPatternIdx = 0;
                 currentState = State.ShowWinPattern;
+                playSurface.ShowWinPattern();
                 break;
 
             case State.ShowWinPattern:
-                playSurface.ShowWinPattern();
 
-                /* TODO the next state should be to wait for the players input and evaluate their button presses
-                        but for now just running through all levels/rounds to examine log output for correct play sequence. 
-                */
-                currentState = State.NewRound;
+                curWinPatternIdx = playSurface.ShowWinPattern(curWinPatternIdx) ? 
+                    (curWinPatternIdx + 1) : curWinPatternIdx;
+
+                currentState = curWinPatternIdx < numberOfButtonPushesToWin ? 
+                        State.ShowWinPattern : State.CollectPlayerInput;
                 break;
 
             case State.EndGame:
@@ -97,6 +103,27 @@ public class GameState : MonoBehaviour {
 #endif
                 break;
         }
+    }
 
+    public void OnButtonPush(GameObject gameObject)
+    {
+        Debug.Log("here");
+        if (currentState != State.CollectPlayerInput)
+        {
+            return;
+        }
+
+        int result = playSurface.CheckPlayerGuess(gameObject);
+        switch (result)
+        {
+            case 1:
+                break;
+            case 3:
+                currentState = State.NewRound;
+                break;
+            default:
+                currentState = State.EndGame;
+                break;
+        }
     }
 }
