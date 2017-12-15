@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311947, g: 0.38074005, b: 0.35872722, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -86,7 +86,8 @@ LightmapSettings:
     m_PVRFilteringAtrousColorSigma: 1
     m_PVRFilteringAtrousNormalSigma: 1
     m_PVRFilteringAtrousPositionSigma: 1
-  m_LightingDataAsset: {fileID: 0}
+  m_LightingDataAsset: {fileID: 112000002, guid: 7c0dd2947e9909c45be2b0629b585ebd,
+    type: 2}
   m_UseShadowmask: 1
 --- !u!196 &4
 NavMeshSettings:
@@ -1097,6 +1098,11 @@ Prefab:
       propertyPath: gameState
       value: 
       objectReference: {fileID: 853810108}
+    - target: {fileID: 198852572130980800, guid: faa7c1111a876824ba4a06ae7e21944d,
+        type: 2}
+      propertyPath: randomSeed
+      value: -1436087723
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: faa7c1111a876824ba4a06ae7e21944d, type: 2}
   m_IsPrefabParent: 0
@@ -1300,7 +1306,7 @@ Prefab:
     - target: {fileID: 198134820947445258, guid: 4e08e0a822c89484b9a7e6f807e49858,
         type: 2}
       propertyPath: randomSeed
-      value: -997285595
+      value: -967017048
       objectReference: {fileID: 0}
     - target: {fileID: 198134820947445258, guid: 4e08e0a822c89484b9a7e6f807e49858,
         type: 2}
@@ -2175,7 +2181,7 @@ Prefab:
     - target: {fileID: 198360961335163580, guid: 046b82f4463dcaf42a762f66b4761fed,
         type: 2}
       propertyPath: randomSeed
-      value: 158936094
+      value: -46256679
       objectReference: {fileID: 0}
     - target: {fileID: 198360961335163580, guid: 046b82f4463dcaf42a762f66b4761fed,
         type: 2}
@@ -2320,7 +2326,7 @@ Prefab:
     - target: {fileID: 198594700111524832, guid: 37761ba7d65ea554abe0f0d02ae5588e,
         type: 2}
       propertyPath: randomSeed
-      value: 191051159
+      value: -1549265678
       objectReference: {fileID: 0}
     - target: {fileID: 198594700111524832, guid: 37761ba7d65ea554abe0f0d02ae5588e,
         type: 2}
@@ -2413,6 +2419,85 @@ Light:
   m_UseColorTemperature: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
+--- !u!1 &1907727565
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 1907727567}
+  - component: {fileID: 1907727566}
+  m_Layer: 0
+  m_Name: Area Light
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!108 &1907727566
+Light:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1907727565}
+  m_Enabled: 1
+  serializedVersion: 8
+  m_Type: 3
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Intensity: 1
+  m_Range: 10
+  m_SpotAngle: 30
+  m_CookieSize: 10
+  m_Shadows:
+    m_Type: 0
+    m_Resolution: -1
+    m_CustomResolution: -1
+    m_Strength: 1
+    m_Bias: 0.05
+    m_NormalBias: 0.4
+    m_NearPlane: 0.2
+  m_Cookie: {fileID: 0}
+  m_DrawHalo: 0
+  m_Flare: {fileID: 0}
+  m_RenderMode: 0
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_Lightmapping: 2
+  m_AreaSize: {x: 1, y: 1}
+  m_BounceIntensity: 1
+  m_FalloffTable:
+    m_Table[0]: 0
+    m_Table[1]: 0
+    m_Table[2]: 0
+    m_Table[3]: 0
+    m_Table[4]: 0
+    m_Table[5]: 0
+    m_Table[6]: 0
+    m_Table[7]: 0
+    m_Table[8]: 0
+    m_Table[9]: 0
+    m_Table[10]: 0
+    m_Table[11]: 0
+    m_Table[12]: 0
+  m_ColorTemperature: 6570
+  m_UseColorTemperature: 0
+  m_ShadowRadius: 0
+  m_ShadowAngle: 0
+--- !u!4 &1907727567
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1907727565}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 5, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1923110567
 Prefab:
   m_ObjectHideFlags: 0
