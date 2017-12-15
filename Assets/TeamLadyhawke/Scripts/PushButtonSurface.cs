@@ -52,7 +52,9 @@ public class PushButtonSurface : MonoBehaviour {
         StringBuilder dbg = new StringBuilder("This is the win pattern: ");
         for (int i = 0; i < winPattern.Count; i++)
         {
-            dbg.Append(winPattern[i]);
+            int btnIdx = winPattern[i];
+            dbg.Append(btnIdx);
+            dbg.Append(pushButtons[btnIdx].name);
             dbg.Append((i < winPattern.Count - 1) ? ", " : "");
         }
         Debug.Log(dbg);
