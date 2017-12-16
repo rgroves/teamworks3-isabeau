@@ -18,7 +18,7 @@ public class GameState : MonoBehaviour {
     public GameObject[] pushButtonSurfaces;
 
     // The current level's play surface.
-    private PushButtonSurface playSurface;
+    private PushButtonSurface currentPlaySurface;
 
     // Number of button pushes needed to win for this round.
     private int numberOfButtonPushesToWin;
@@ -29,8 +29,10 @@ public class GameState : MonoBehaviour {
         NewGame,
         NewLevel,
         NewRound,
+        WaitForPlayerStartAction,
         GenerateWinPattern,
         ShowWinPattern,
+        ShowingWinPattern,
         CollectPlayerInput,
         CheckPlayerGuess,
         EndGame
@@ -39,27 +41,23 @@ public class GameState : MonoBehaviour {
     // The current game state.
     private State currentState;
 
-    // TODO
-    int curWinPatternIdx = 0;
-
-    Queue<GameObject> playerGuesses;
-    int guessResult;
-    float timeOfLastGuess;
+    private Queue<PushButton> playerGuesses;
+    private int guessResult;
+    private float timeOfLastGuess;
 
     // Use this for initialization
-    void Start () {
-        playerGuesses = new Queue<GameObject>();
+    private void Start () {
+        playerGuesses = new Queue<PushButton>();
         currentState = State.NewGame;
     }
 
     // Update is called once per frame
-    void Update () {
+    private void Update () {
         switch (currentState)
         {
             case State.NewGame:
                 levelManager.NewGame(NumberOfLevels, NumberOfRounds);
                 playerGuesses.Clear();
-                curWinPatternIdx = 0;
                 timeOfLastGuess = 0;
                 currentState = State.NewLevel;
                 break;
@@ -67,45 +65,61 @@ public class GameState : MonoBehaviour {
             case State.NewLevel:
                 levelManager.NewLevel();
 
-                // If there are more levels to play then continue play otherwise transition to game over.
-                currentState = levelManager.HasMoreLevels ? State.GenerateWinPattern : State.EndGame;
+                if (levelManager.HasMoreLevels)
+                {
+                    // Set the current play surface for this level and make it ready to play.
+                    currentPlaySurface = pushButtonSurfaces[levelManager.CurrentLevel - 1].GetComponent<PushButtonSurface>();
+                    currentPlaySurface.Mode = PushButtonSurface.SurfaceMode.READY_TO_PLAY;
+
+                    // Update state to wait for player to start.
+                    currentState = State.WaitForPlayerStartAction;
+                }
+                else
+                {
+                    currentPlaySurface = null;
+                    currentState = State.EndGame;
+                }
+
                 break;
 
             case State.NewRound:
+                guessResult = 0;
                 levelManager.NewRound();
 
                 // If there are more rounds in the current level then continue play otherwise transition to next level.
                 currentState = levelManager.HasMoreRounds ? State.GenerateWinPattern : State.NewLevel;
                 break;
 
+            case State.WaitForPlayerStartAction:
+                // Nothing to do here. Wating for player to click the power 
+                // button which will trigger a call to OnPowerButtonPush() 
+                // which will transition the state.
+                break;
+
             case State.GenerateWinPattern:
-                int level = levelManager.CurrentLevel;
-                int round = levelManager.CurrentRound;
-
-                // Set the current play surface for this level
-                playSurface = pushButtonSurfaces[level - 1].GetComponent<PushButtonSurface>();
-
                 // Set number of button pushes that should be in the win pattern for this level/round.
-                numberOfButtonPushesToWin = (2 * playSurface.PushButtonCount) + (round - 2);
+                numberOfButtonPushesToWin = (2 * currentPlaySurface.PushButtonCount) + (levelManager.CurrentRound - 2);
 
                 Debug.Log(">>> " + levelManager.CurrentLevelRound + ", Pushes To Win: " + numberOfButtonPushesToWin + " <<<");
 
                 // Generate the pattern that corresponds to the correct order of 
                 // button pushes the player must make to win.
-                playSurface.GenerateWinPattern(numberOfButtonPushesToWin);
+                currentPlaySurface.GenerateWinPattern(numberOfButtonPushesToWin);
+                currentPlaySurface.LogWinPattern();
 
-                curWinPatternIdx = 0;
                 currentState = State.ShowWinPattern;
-                playSurface.ShowWinPattern();
                 break;
 
             case State.ShowWinPattern:
+                currentPlaySurface.ShowWinPattern();
+                currentState = State.ShowingWinPattern;
+                break;
 
-                curWinPatternIdx = playSurface.ShowWinPattern(curWinPatternIdx) ? 
-                    (curWinPatternIdx + 1) : curWinPatternIdx;
-
-                currentState = curWinPatternIdx < numberOfButtonPushesToWin ? 
-                        State.ShowWinPattern : State.CollectPlayerInput;
+            case State.ShowingWinPattern:
+                if (currentPlaySurface.IsShowingWinPattern)
+                {
+                    currentState = State.CollectPlayerInput;
+                }
                 break;
 
             case State.CollectPlayerInput:
@@ -117,14 +131,14 @@ public class GameState : MonoBehaviour {
                     }
                     else if (Time.time - timeOfLastGuess > 1)
                     {
+                        currentPlaySurface.Mode = PushButtonSurface.SurfaceMode.PLAYED;
                         currentState = State.NewRound;
-                        guessResult = 0;
                     }
                 }
                 break;
 
             case State.CheckPlayerGuess:
-                guessResult = playSurface.CheckPlayerGuess(playerGuesses.Dequeue());
+                guessResult = currentPlaySurface.CheckPlayerGuess(playerGuesses.Dequeue());
 
                 switch (guessResult)
                 {
@@ -150,7 +164,7 @@ public class GameState : MonoBehaviour {
 
     public void OnButtonPush(GameObject buttonPushed)
     {
-        Debug.Log("here");
+        //Debug.Log("Push Button Pushed");
 
         if (currentState != State.CollectPlayerInput)
         {
@@ -159,8 +173,21 @@ public class GameState : MonoBehaviour {
 
         timeOfLastGuess = Time.time;
 
-        playerGuesses.Enqueue(buttonPushed);
+        playerGuesses.Enqueue(buttonPushed.GetComponent<PushButton>());
 
         currentState = State.CheckPlayerGuess;
+    }
+
+    public void OnPowerButtonPush(GameObject buttonPushed)
+    {
+        //Debug.Log("Power Button Pushed");
+
+        if (currentState != State.WaitForPlayerStartAction)
+        {
+            return;
+        }
+
+        currentPlaySurface.Mode = PushButtonSurface.SurfaceMode.PLAYING;
+        currentState = State.GenerateWinPattern;
     }
 }
