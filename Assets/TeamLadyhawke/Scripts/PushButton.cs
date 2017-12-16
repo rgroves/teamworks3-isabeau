@@ -7,6 +7,7 @@ public class PushButton : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        gameState.OnButtonPush(gameObject);
+        //Debug.Log("In PushButton.OnPointerClick");
+        gameState.OnButtonPush(this);
     }
 }

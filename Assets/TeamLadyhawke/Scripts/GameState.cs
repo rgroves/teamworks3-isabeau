@@ -23,7 +23,7 @@ public class GameState : MonoBehaviour {
     // Number of button pushes needed to win for this round.
     private int numberOfButtonPushesToWin;
 
-     // Game States
+    // Game States
     private enum State
     {
         NewGame,
@@ -33,21 +33,15 @@ public class GameState : MonoBehaviour {
         GenerateWinPattern,
         ShowWinPattern,
         ShowingWinPattern,
-        CollectPlayerInput,
-        CheckPlayerGuess,
+        CollectPlayerGuesses,
         EndGame
     }
 
     // The current game state.
     private State currentState;
 
-    private Queue<PushButton> playerGuesses;
-    private int guessResult;
-    private float timeOfLastGuess;
-
     // Use this for initialization
     private void Start () {
-        playerGuesses = new Queue<PushButton>();
         currentState = State.NewGame;
     }
 
@@ -57,8 +51,6 @@ public class GameState : MonoBehaviour {
         {
             case State.NewGame:
                 levelManager.NewGame(NumberOfLevels, NumberOfRounds);
-                playerGuesses.Clear();
-                timeOfLastGuess = 0;
                 currentState = State.NewLevel;
                 break;
 
@@ -70,6 +62,7 @@ public class GameState : MonoBehaviour {
                     // Set the current play surface for this level and make it ready to play.
                     currentPlaySurface = pushButtonSurfaces[levelManager.CurrentLevel - 1].GetComponent<PushButtonSurface>();
                     currentPlaySurface.Mode = PushButtonSurface.SurfaceMode.READY_TO_PLAY;
+                    currentPlaySurface.ClearPlayerGuesses();
 
                     // Update state to wait for player to start.
                     currentState = State.WaitForPlayerStartAction;
@@ -83,8 +76,8 @@ public class GameState : MonoBehaviour {
                 break;
 
             case State.NewRound:
-                guessResult = 0;
                 levelManager.NewRound();
+                currentPlaySurface.ClearPlayerGuesses();
 
                 // If there are more rounds in the current level then continue play otherwise transition to next level.
                 currentState = levelManager.HasMoreRounds ? State.GenerateWinPattern : State.NewLevel;
@@ -116,41 +109,24 @@ public class GameState : MonoBehaviour {
                 break;
 
             case State.ShowingWinPattern:
-                if (currentPlaySurface.IsShowingWinPattern)
+                if (!currentPlaySurface.IsShowingWinPattern)
                 {
-                    currentState = State.CollectPlayerInput;
+                    currentState = State.CollectPlayerGuesses;
                 }
                 break;
 
-            case State.CollectPlayerInput:
-                if (guessResult == 3) 
+            case State.CollectPlayerGuesses:
+                if (currentPlaySurface.HasBegunCheckingGuesses)
                 {
-                    if (playerGuesses.Count > 0)
-                    {
-                        currentState = State.CheckPlayerGuess;
-                    }
-                    else if (Time.time - timeOfLastGuess > 1)
+                    if (currentPlaySurface.IsCorrectGuessCount && currentPlaySurface.IsLastPlayerGuessCorrect && currentPlaySurface.HasCheckDelayEnded)
                     {
                         currentPlaySurface.Mode = PushButtonSurface.SurfaceMode.PLAYED;
                         currentState = State.NewRound;
                     }
-                }
-                break;
-
-            case State.CheckPlayerGuess:
-                guessResult = currentPlaySurface.CheckPlayerGuess(playerGuesses.Dequeue());
-
-                switch (guessResult)
-                {
-                    case 1:
-                        currentState = State.CollectPlayerInput;
-                        break;
-                    case 3:
-                        currentState = State.CollectPlayerInput;
-                        break;
-                    default:
+                    else if (!currentPlaySurface.IsLastPlayerGuessCorrect)
+                    {
                         currentState = State.EndGame;
-                        break;
+                    }
                 }
                 break;
 
@@ -162,25 +138,23 @@ public class GameState : MonoBehaviour {
         }
     }
 
-    public void OnButtonPush(GameObject buttonPushed)
+    public void OnButtonPush(PushButton buttonPushed)
     {
-        //Debug.Log("Push Button Pushed");
+        Debug.Log("Push Button Pushed");
 
-        if (currentState != State.CollectPlayerInput)
+        if (currentState != State.CollectPlayerGuesses)
         {
             return;
         }
 
-        timeOfLastGuess = Time.time;
+        currentPlaySurface.StorePlayerGuess(buttonPushed);
 
-        playerGuesses.Enqueue(buttonPushed.GetComponent<PushButton>());
-
-        currentState = State.CheckPlayerGuess;
+        currentState = State.CollectPlayerGuesses;
     }
 
     public void OnPowerButtonPush(GameObject buttonPushed)
     {
-        //Debug.Log("Power Button Pushed");
+        Debug.Log("Power Button Pushed");
 
         if (currentState != State.WaitForPlayerStartAction)
         {

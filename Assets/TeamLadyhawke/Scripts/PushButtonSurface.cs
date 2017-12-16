@@ -102,6 +102,9 @@ public class PushButtonSurface : MonoBehaviour {
 
             // Set the initial mode for this PushButtonSurface.
             Mode = SurfaceMode.NOT_YET_PLAYED;
+
+            // Create a queue to store player guesses.
+            playerGuessQueue = new Queue<PushButton>();
         }
         else
         {
@@ -109,7 +112,15 @@ public class PushButtonSurface : MonoBehaviour {
         }
     }
 
+    private bool isCheckingPlayerGuesses;
+    private bool isLastPlayerGuessCorrect;
+    private bool isCorrectGuessCount;
+    private bool hasCheckDelayEnded;
+    public bool IsLastPlayerGuessCorrect { get { return isLastPlayerGuessCorrect; } }
+    public bool IsCorrectGuessCount { get { return isCorrectGuessCount; } }
+    public bool HasCheckDelayEnded {  get { return hasCheckDelayEnded; } }
     private int showPatternIdx;
+
     private void Update()
     {
         if (isShowingWinPattern)
@@ -129,6 +140,60 @@ public class PushButtonSurface : MonoBehaviour {
                 anim.SetBool("HasBeenActivated", false);
 
                 isShowingWinPattern = (++showPatternIdx) < winPattern.Count;
+            }
+        }
+
+        if (isCheckingPlayerGuesses)
+        {
+            //Debug.Log("Checking Player Guesses");
+            if (playerGuessQueue.Count > 0)
+            {
+                PushButton btn = playerGuessQueue.Peek();
+                Animator anim = btn.gameObject.GetComponent<Animator>();
+
+                bool activated = anim.GetBool("HasBeenActivated");
+
+                if (!activated)
+                {
+                    anim.SetBool("Activate", true);
+                }
+                else
+                {
+                    // Button was lit up reset to light next one (if more to light)
+                    anim.SetBool("HasBeenActivated", false);
+
+                    // Remove the guess from the queue
+                    btn = playerGuessQueue.Dequeue();
+
+                    // Check the guess for correctness.
+                    int btnIdx = winPattern[playerGuessIdx++];
+
+                    if (pushButtons[btnIdx] == btn)
+                    {
+                        isLastPlayerGuessCorrect = true;
+                        //Debug.Log("Correct guess, more? " + ((playerGuessIdx < winPattern.Count) ? "Yes." : "No."));
+                    }
+                    else
+                    {
+                        Debug.Log("Wrong guess");
+                        isLastPlayerGuessCorrect = false;
+                        isCheckingPlayerGuesses = false;
+                    }
+
+                    // Check the guess count against the number of buttons in the win pattern.
+                    if (playerGuessIdx == winPattern.Count)
+                    {
+                        isCorrectGuessCount = true;
+                    } else if (playerGuessIdx > winPattern.Count)
+                    {
+                        Debug.Log("Too many guesses");
+                        isLastPlayerGuessCorrect = false;
+                        isCheckingPlayerGuesses = false;
+                    }
+
+                    hasBegunCheckingGuesses = true;
+                    hasCheckDelayEnded = Time.time - timeOfLastGuess > 1;
+                }
             }
         }
     }
@@ -175,6 +240,7 @@ public class PushButtonSurface : MonoBehaviour {
         }
     }
 
+    // TODO WTF ?
     private void PushButtonsEnabled(bool enabled)
     {
 
@@ -227,26 +293,18 @@ public class PushButtonSurface : MonoBehaviour {
         }
     }
 
-
-
-
-
-
-
-
     //
     //
     //
-
-    // Indicates whether or not this surface has been played already.
-    private bool hasBeenPlayed;
-
-    // Indicates if this surface is enabled or not.
-    private bool surfaceEnabled;
-
-
+    
     private List<int> winPattern = new List<int>();
     private int playerGuessIdx = 0;
+    private Queue<PushButton> playerGuessQueue;
+    private float timeOfLastGuess;
+
+    private bool hasBegunCheckingGuesses;
+    public bool HasBegunCheckingGuesses { get { return hasBegunCheckingGuesses; } }
+
 
     public void GenerateWinPattern(int numberOfPushesToWin)
     {
@@ -274,7 +332,8 @@ public class PushButtonSurface : MonoBehaviour {
         {
             int btnIdx = winPattern[i];
             dbg.Append(btnIdx);
-            dbg.Append(pushButtons[btnIdx].name);
+            dbg.Append(") ");
+            dbg.Append(pushButtons[btnIdx].name.Replace("_PushButton", ""));
             dbg.Append((i < winPattern.Count - 1) ? ", " : "");
         }
         Debug.Log(dbg);
@@ -286,35 +345,24 @@ public class PushButtonSurface : MonoBehaviour {
         showPatternIdx = 0;
     }
 
-    public int CheckPlayerGuess(PushButton obj)
+    public void StorePlayerGuess(PushButton button)
     {
-
-        if (playerGuessIdx == winPattern.Count)
-        {
-            Debug.Log("Too many guesses");
-            return 0;
-        }
-
-        int btnIdx = winPattern[playerGuessIdx++];
-
-        if (pushButtons[btnIdx] == obj)
-        {
-            if (playerGuessIdx < winPattern.Count)
-            {
-                //Debug.Log("Correct guess, more");
-                return 1;
-            }
-            else
-            {
-                //Debug.Log("Correct guess, no more");
-                return 3;
-            }
-        }
-        else
-        {
-            Debug.Log("Wrong guess");
-            return 0;
-        }
+        playerGuessQueue.Enqueue(button);
+        timeOfLastGuess = Time.time;
+        //Debug.Log("Guess queued: " + button.name);
+        isCheckingPlayerGuesses = true;
     }
 
+    public void ClearPlayerGuesses()
+    {
+        //Debug.Log("Guesses cleared!");
+        playerGuessQueue.Clear();
+        timeOfLastGuess = 0;
+        hasBegunCheckingGuesses = false;
+        isCheckingPlayerGuesses = false;
+        isLastPlayerGuessCorrect = false;
+        isCorrectGuessCount = false;
+        hasCheckDelayEnded = false;
+    }
 }
+

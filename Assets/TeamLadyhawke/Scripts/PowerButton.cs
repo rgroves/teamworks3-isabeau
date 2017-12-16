@@ -7,9 +7,13 @@ public class PowerButton : MonoBehaviour, IPointerClickHandler
     public GameState gameState;
     private Animator animator;
 
-    public void Start()
+    private void Awake()
     {
         animator = gameObject.GetComponent<Animator>();
+        if (animator == null)
+        {
+            Debug.LogError("Animator could not be found for " + gameObject.name);
+        }
     }
 
     public void StandBy()
