@@ -121,6 +121,9 @@ public class PushButtonSurface : MonoBehaviour {
     public bool HasCheckDelayEnded {  get { return hasCheckDelayEnded; } }
     private int showPatternIdx;
 
+    private float timeSinceLastActivation;
+    private float pauseTimeBetweenButtonActivations = .5f;
+
     private void Update()
     {
         if (isShowingWinPattern)
@@ -133,14 +136,17 @@ public class PushButtonSurface : MonoBehaviour {
             if (!activated)
             {
                 anim.SetBool("Activate", true);
+                timeSinceLastActivation = 0;
             }
-            else
+            else if (timeSinceLastActivation > pauseTimeBetweenButtonActivations)
             {
                 // Button was lit up reset to light next one (if more to light)
                 anim.SetBool("HasBeenActivated", false);
 
                 isShowingWinPattern = (++showPatternIdx) < winPattern.Count;
             }
+
+            timeSinceLastActivation += Time.deltaTime;
         }
 
         if (isCheckingPlayerGuesses)
@@ -192,8 +198,12 @@ public class PushButtonSurface : MonoBehaviour {
                     }
 
                     hasBegunCheckingGuesses = true;
-                    hasCheckDelayEnded = Time.time - timeOfLastGuess > 1;
                 }
+            }
+
+            if (hasBegunCheckingGuesses)
+            {
+                hasCheckDelayEnded = Time.time - timeOfLastGuess > 1;
             }
         }
     }
