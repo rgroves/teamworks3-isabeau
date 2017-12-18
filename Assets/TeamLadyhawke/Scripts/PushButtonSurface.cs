@@ -137,6 +137,12 @@ public class PushButtonSurface : MonoBehaviour {
             {
                 anim.SetBool("Activate", true);
                 timeSinceLastActivation = 0;
+
+                AudioSource audioSource = pushButtons[btnIdx].gameObject.GetComponent<AudioSource>();
+                if (!audioSource.isPlaying)
+                {
+                    pushButtons[btnIdx].gameObject.GetComponent<AudioSource>().Play();
+                }
             }
             else if (timeSinceLastActivation > pauseTimeBetweenButtonActivations)
             {
@@ -162,6 +168,12 @@ public class PushButtonSurface : MonoBehaviour {
                 if (!activated)
                 {
                     anim.SetBool("Activate", true);
+
+                    AudioSource audioSource = btn.gameObject.GetComponent<AudioSource>();
+                    if (!audioSource.isPlaying)
+                    {
+                        btn.gameObject.GetComponent<AudioSource>().Play();
+                    }
                 }
                 else
                 {
