@@ -195,6 +195,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameState: {fileID: 0}
+  soundEffects:
+  - {fileID: 8300000, guid: 4691a62ce401ecf45bb7cd7f749a65dc, type: 3}
+  - {fileID: 8300000, guid: 2f43692e785991148987b305805e09c2, type: 3}
 --- !u!135 &135820636454761238
 SphereCollider:
   m_ObjectHideFlags: 1

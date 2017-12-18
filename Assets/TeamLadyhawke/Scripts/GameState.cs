@@ -155,6 +155,7 @@ public class GameState : MonoBehaviour {
 
         if (currentState != State.CollectPlayerGuesses)
         {
+            buttonPushed.PlayInvalidActionSound();
             return;
         }
 
