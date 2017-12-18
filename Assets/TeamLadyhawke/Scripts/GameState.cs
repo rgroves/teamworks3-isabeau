@@ -20,8 +20,9 @@ public class GameState : MonoBehaviour {
     public AudioClip[] soundEffects;
     private AudioSource audioSource;
     private int readyForInputSoundIdx = 0;
-    private int winSoundIdx = 0;
-    private int loseSoundIdx = 0;
+    private int wonRoundSoundIdx = 0;
+    private int lostRoundSoundIdx = 0;
+    private int lostGameSoundIdx = 0;
 
     // The current level's play surface.
     private PushButtonSurface currentPlaySurface;
@@ -44,7 +45,8 @@ public class GameState : MonoBehaviour {
         ShowingWinPattern,
         CollectPlayerGuesses,
         WinGame,
-        LoseGame,
+        LostRound,
+        LostGame,
         EndGame
     }
 
@@ -61,15 +63,19 @@ public class GameState : MonoBehaviour {
 
             if (clip.name == "LoseRoundSound")
             {
-                loseSoundIdx = i;
+                lostRoundSoundIdx = i;
             }
             else if (clip.name == "WinRoundSound")
             {
-                winSoundIdx = i;
+                wonRoundSoundIdx = i;
             }
-            else
+            else if (clip.name == "ReadyForInputSound")
             {
                 readyForInputSoundIdx = i;
+            }
+            else if (clip.name == "LostGameSound")
+            {
+                lostGameSoundIdx = i;
             }
         }
     }
@@ -169,15 +175,15 @@ public class GameState : MonoBehaviour {
                     if (currentPlaySurface.IsCorrectGuessCount && currentPlaySurface.IsLastPlayerGuessCorrect && currentPlaySurface.HasCheckDelayEnded)
                     {
                         currentPlaySurface.Mode = PushButtonSurface.SurfaceMode.PLAYED;
-                        audioSource.clip = soundEffects[winSoundIdx];
+                        audioSource.clip = soundEffects[wonRoundSoundIdx];
                         audioSource.Play();
                         currentState = State.NewRoundWait;
                     }
                     else if (!currentPlaySurface.IsLastPlayerGuessCorrect)
                     {
-                        audioSource.clip = soundEffects[loseSoundIdx];
+                        audioSource.clip = soundEffects[lostGameSoundIdx];
                         audioSource.Play();
-                        currentState = State.LoseGame;
+                        currentState = State.LostRound;
                     }
                 }
                 break;
@@ -193,7 +199,16 @@ public class GameState : MonoBehaviour {
                 currentState = State.EndGame;
                 break;
 
-            case State.LoseGame:
+            case State.LostRound:
+                if (!audioSource.isPlaying)
+                {
+                    audioSource.clip = soundEffects[lostRoundSoundIdx];
+                    audioSource.Play();
+                    currentState = State.LostGame;
+                }
+                break;
+
+            case State.LostGame:
                 if (!audioSource.isPlaying)
                 {
                     currentState = State.EndGame;
