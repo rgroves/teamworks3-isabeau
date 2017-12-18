@@ -175,30 +175,34 @@ public class PushButtonSurface : MonoBehaviour {
                     // Remove the guess from the queue
                     btn = playerGuessQueue.Dequeue();
 
-                    // Check the guess for correctness.
-                    int btnIdx = winPattern[playerGuessIdx++];
-
-                    if (pushButtons[btnIdx] == btn)
-                    {
-                        isLastPlayerGuessCorrect = true;
-                        //Debug.Log("Correct guess, more? " + ((playerGuessIdx < winPattern.Count) ? "Yes." : "No."));
-                    }
-                    else
-                    {
-                        Debug.Log("Wrong guess");
-                        isLastPlayerGuessCorrect = false;
-                        isCheckingPlayerGuesses = false;
-                    }
-
-                    // Check the guess count against the number of buttons in the win pattern.
-                    if (playerGuessIdx == winPattern.Count)
-                    {
-                        isCorrectGuessCount = true;
-                    } else if (playerGuessIdx > winPattern.Count)
+                    if (playerGuessIdx >= winPattern.Count)
                     {
                         Debug.Log("Too many guesses");
                         isLastPlayerGuessCorrect = false;
                         isCheckingPlayerGuesses = false;
+                    }
+                    else
+                    {
+                        // Check the guess for correctness.
+                        int btnIdx = winPattern[playerGuessIdx++];
+
+                        if (pushButtons[btnIdx] == btn)
+                        {
+                            isLastPlayerGuessCorrect = true;
+                            //Debug.Log("Correct guess, more? " + ((playerGuessIdx < winPattern.Count) ? "Yes." : "No."));
+                        }
+                        else
+                        {
+                            Debug.Log("Wrong guess");
+                            isLastPlayerGuessCorrect = false;
+                            isCheckingPlayerGuesses = false;
+                        }
+
+                        // Check the guess count against the number of buttons in the win pattern.
+                        if (playerGuessIdx == winPattern.Count)
+                        {
+                            isCorrectGuessCount = true;
+                        }
                     }
 
                     hasBegunCheckingGuesses = true;
@@ -207,7 +211,7 @@ public class PushButtonSurface : MonoBehaviour {
 
             if (hasBegunCheckingGuesses)
             {
-                hasCheckDelayEnded = Time.time - timeOfLastGuess > 1;
+                hasCheckDelayEnded = ((Time.time - timeOfLastGuess) > 1 && playerGuessQueue.Count == 0);
             }
         }
     }
