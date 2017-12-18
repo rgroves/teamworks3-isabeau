@@ -17,6 +17,12 @@ public class GameState : MonoBehaviour {
     // The push button objects should be child objects of the surface game object and tagged as "PushButton".
     public GameObject[] pushButtonSurfaces;
 
+    public AudioClip[] soundEffects;
+    private AudioSource audioSource;
+    private int readyForInputSoundIdx = 0;
+    private int winSoundIdx = 0;
+    private int loseSoundIdx = 0;
+
     // The current level's play surface.
     private PushButtonSurface currentPlaySurface;
 
@@ -29,6 +35,7 @@ public class GameState : MonoBehaviour {
         NewGame,
         NewLevel,
         NewRound,
+        NewRoundWait,
         WaitForPlayerStartAction,
         BeginRound,
         WaitForStartSound,
@@ -36,12 +43,36 @@ public class GameState : MonoBehaviour {
         ShowWinPattern,
         ShowingWinPattern,
         CollectPlayerGuesses,
+        WinGame,
+        LoseGame,
         EndGame
     }
 
     // The current game state.
     private State currentState;
 
+    private void Awake()
+    {
+        audioSource = gameObject.GetComponent<AudioSource>();
+
+        for (int i = 0; i < soundEffects.Length; i++)
+        {
+            AudioClip clip = soundEffects[i];
+
+            if (clip.name == "LoseRoundSound")
+            {
+                loseSoundIdx = i;
+            }
+            else if (clip.name == "WinRoundSound")
+            {
+                winSoundIdx = i;
+            }
+            else
+            {
+                readyForInputSoundIdx = i;
+            }
+        }
+    }
     // Use this for initialization
     private void Start () {
         currentState = State.NewGame;
@@ -72,7 +103,7 @@ public class GameState : MonoBehaviour {
                 else
                 {
                     currentPlaySurface = null;
-                    currentState = State.EndGame;
+                    currentState = State.WinGame;
                 }
 
                 break;
@@ -124,6 +155,12 @@ public class GameState : MonoBehaviour {
                 {
                     currentState = State.CollectPlayerGuesses;
                 }
+
+                if (currentState != State.ShowingWinPattern)
+                {
+                    audioSource.clip = soundEffects[readyForInputSoundIdx];
+                    audioSource.Play();
+                }
                 break;
 
             case State.CollectPlayerGuesses:
@@ -132,12 +169,34 @@ public class GameState : MonoBehaviour {
                     if (currentPlaySurface.IsCorrectGuessCount && currentPlaySurface.IsLastPlayerGuessCorrect && currentPlaySurface.HasCheckDelayEnded)
                     {
                         currentPlaySurface.Mode = PushButtonSurface.SurfaceMode.PLAYED;
-                        currentState = State.NewRound;
+                        audioSource.clip = soundEffects[winSoundIdx];
+                        audioSource.Play();
+                        currentState = State.NewRoundWait;
                     }
                     else if (!currentPlaySurface.IsLastPlayerGuessCorrect)
                     {
-                        currentState = State.EndGame;
+                        audioSource.clip = soundEffects[loseSoundIdx];
+                        audioSource.Play();
+                        currentState = State.LoseGame;
                     }
+                }
+                break;
+
+            case State.NewRoundWait:
+                if (!audioSource.isPlaying)
+                {
+                    currentState = State.NewRound;
+                }
+                break;
+
+            case State.WinGame:
+                currentState = State.EndGame;
+                break;
+
+            case State.LoseGame:
+                if (!audioSource.isPlaying)
+                {
+                    currentState = State.EndGame;
                 }
                 break;
 
@@ -145,6 +204,10 @@ public class GameState : MonoBehaviour {
 #if UNITY_EDITOR
                 UnityEditor.EditorApplication.isPlaying = false;
 #endif
+                break;
+
+            default:
+                Debug.LogError("Unhandled game state: " + currentState.ToString());
                 break;
         }
     }
