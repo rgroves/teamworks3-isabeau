@@ -27,6 +27,8 @@ public class GameState : MonoBehaviour {
     private int pieceOfCakeSoundIdx = 0; //WinPieceOfCake
     private int allDayLongSoundIdx = 0; //WinAllDayLongSound
     private int worriedForAMinuteSoundIdx = 0; //WinWorriedForAMinute
+    private int voiceOverPt1SoundIdx = 0; //VoiceOverPart1Sound
+    private int voiceOverPt2SoundIdx = 0; //VoiceOverPart2Sound
 
 
     // The current level's play surface.
@@ -38,6 +40,10 @@ public class GameState : MonoBehaviour {
     // Game States
     private enum State
     {
+        Intro1,
+        WaitIntro1,
+        Intro2,
+        WaitIntro2,
         NewGame,
         NewLevel,
         NewRound,
@@ -100,6 +106,14 @@ public class GameState : MonoBehaviour {
             {
                 worriedForAMinuteSoundIdx = i;
             }
+            else if (clip.name == "VoiceOverPart1Sound")
+            {
+                voiceOverPt1SoundIdx = i;
+            }
+            else if (clip.name == "VoiceOverPart2Sound")
+            {
+                voiceOverPt2SoundIdx = i;
+            }
         }
     }
     // Use this for initialization
@@ -113,7 +127,35 @@ public class GameState : MonoBehaviour {
         {
             case State.NewGame:
                 levelManager.NewGame(NumberOfLevels, NumberOfRounds);
-                currentState = State.NewLevel;
+                currentState = State.Intro1;
+                break;
+
+            case State.Intro1:
+                audioSource.clip = soundEffects[voiceOverPt1SoundIdx];
+                audioSource.Play();
+                currentState = State.WaitIntro1;
+                break;
+
+            case State.WaitIntro1:
+                if (!audioSource.isPlaying)
+                {
+                    currentState = State.Intro2;
+                }
+                break;
+
+            case State.Intro2:
+                Destroy(GameObject.FindGameObjectWithTag("Portal"), 1);
+
+                audioSource.clip = soundEffects[voiceOverPt2SoundIdx];
+                audioSource.Play();
+                currentState = State.WaitIntro2;
+                break;
+
+            case State.WaitIntro2:
+                if (!audioSource.isPlaying)
+                {
+                    currentState = State.NewLevel;
+                }
                 break;
 
             case State.NewLevel:

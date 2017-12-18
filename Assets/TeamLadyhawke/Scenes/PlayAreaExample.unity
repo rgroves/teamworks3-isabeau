@@ -1010,7 +1010,7 @@ GameObject:
   - component: {fileID: 460656700}
   m_Layer: 0
   m_Name: Ground (1)
-  m_TagString: Untagged
+  m_TagString: Portal
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1139,7 +1139,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: -1235220147
+  randomSeed: 627971505
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -5017,6 +5017,8 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 956fe6568d0c3794a834ca269533c9b0, type: 3}
   - {fileID: 8300000, guid: a875ed7f889629d4eb363a432cfce35a, type: 3}
   - {fileID: 8300000, guid: 90626af004bd76b4c86f9a6aaef82d96, type: 3}
+  - {fileID: 8300000, guid: 4013d747e0c292643a096360af2dc9a7, type: 3}
+  - {fileID: 8300000, guid: 117d170f873d340498b16228621ff2f5, type: 3}
 --- !u!4 &853810109
 Transform:
   m_ObjectHideFlags: 0
@@ -5604,7 +5606,7 @@ GameObject:
   - component: {fileID: 1047539012}
   m_Layer: 0
   m_Name: Portal
-  m_TagString: Untagged
+  m_TagString: Portal
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -6708,7 +6710,7 @@ GameObject:
   - component: {fileID: 1673061847}
   m_Layer: 0
   m_Name: Ground
-  m_TagString: Untagged
+  m_TagString: Portal
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -6837,7 +6839,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: -2048306916
+  randomSeed: -1545107609
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -10105,7 +10107,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 4294967039
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
