@@ -221,24 +221,20 @@ public class PushButtonSurface : MonoBehaviour {
             {
                 case SurfaceMode.NOT_YET_PLAYED:
                     powerButton.TurnOff();
-                    PushButtonsEnabled(false);
                     mode = value;
                     break;
 
                 case SurfaceMode.READY_TO_PLAY:
                     powerButton.StandBy();
-                    PushButtonsEnabled(false);
                     mode = value;
                     break;
 
                 case SurfaceMode.PLAYING:
                     powerButton.TurnOff();
-                    PushButtonsEnabled(true);
                     mode = value;
                     break;
 
                 case SurfaceMode.PLAYED:
-                    PushButtonsEnabled(false);
                     mode = value;
                     break;
 
@@ -248,12 +244,6 @@ public class PushButtonSurface : MonoBehaviour {
                     break;
             }
         }
-    }
-
-    // TODO WTF ?
-    private void PushButtonsEnabled(bool enabled)
-    {
-
     }
 
     private void FindPowerButton()
@@ -374,5 +364,11 @@ public class PushButtonSurface : MonoBehaviour {
         isCorrectGuessCount = false;
         hasCheckDelayEnded = false;
     }
-}
 
+    public void PlayStartSound()
+    {
+        gameObject.GetComponent<AudioSource>().Play();
+    }
+
+    public bool IsStartSoundPlaying { get { return gameObject.GetComponent<AudioSource>().isPlaying; } }
+}

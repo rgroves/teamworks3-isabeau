@@ -30,6 +30,8 @@ public class GameState : MonoBehaviour {
         NewLevel,
         NewRound,
         WaitForPlayerStartAction,
+        BeginRound,
+        WaitForStartSound,
         GenerateWinPattern,
         ShowWinPattern,
         ShowingWinPattern,
@@ -87,6 +89,15 @@ public class GameState : MonoBehaviour {
                 // Nothing to do here. Wating for player to click the power 
                 // button which will trigger a call to OnPowerButtonPush() 
                 // which will transition the state.
+                break;
+
+            case State.BeginRound:
+                currentPlaySurface.PlayStartSound();
+                currentState = State.WaitForStartSound;
+                break;
+
+            case State.WaitForStartSound:
+                currentState = currentPlaySurface.IsStartSoundPlaying ? State.WaitForStartSound : State.GenerateWinPattern;
                 break;
 
             case State.GenerateWinPattern:
@@ -162,6 +173,6 @@ public class GameState : MonoBehaviour {
         }
 
         currentPlaySurface.Mode = PushButtonSurface.SurfaceMode.PLAYING;
-        currentState = State.GenerateWinPattern;
+        currentState = State.BeginRound;
     }
 }
