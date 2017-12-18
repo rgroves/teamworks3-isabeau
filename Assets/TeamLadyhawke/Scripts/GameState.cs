@@ -144,7 +144,7 @@ public class GameState : MonoBehaviour {
                 break;
 
             case State.Intro2:
-                Destroy(GameObject.FindGameObjectWithTag("Portal"), 1);
+                RemoveIntroAssets(1);
 
                 audioSource.clip = soundEffects[voiceOverPt2SoundIdx];
                 audioSource.Play();
@@ -321,7 +321,14 @@ public class GameState : MonoBehaviour {
         }
     }
 
-    public void OnButtonPush(PushButton buttonPushed)
+    public void RemoveIntroAssets(int wait)
+    {
+        Destroy(GameObject.FindGameObjectWithTag("Portal"), wait);
+        GameObject skipBtn = GameObject.FindGameObjectWithTag("SkipButton");
+        skipBtn.transform.parent.gameObject.layer = 8;
+    }
+
+public void OnButtonPush(PushButton buttonPushed)
     {
         Debug.Log("Push Button Pushed");
 
@@ -347,5 +354,12 @@ public class GameState : MonoBehaviour {
 
         currentPlaySurface.Mode = PushButtonSurface.SurfaceMode.PLAYING;
         currentState = State.BeginRound;
+    }
+
+    public void OnSkipIntro()
+    {
+        audioSource.Stop();
+        RemoveIntroAssets(0);
+        currentState = State.NewLevel;
     }
 }
