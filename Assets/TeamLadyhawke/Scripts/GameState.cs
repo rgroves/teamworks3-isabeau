@@ -23,6 +23,11 @@ public class GameState : MonoBehaviour {
     private int wonRoundSoundIdx = 0;
     private int lostRoundSoundIdx = 0;
     private int lostGameSoundIdx = 0;
+    private int easyPeasySoundIdx = 0; //WinEasyPeasySound
+    private int pieceOfCakeSoundIdx = 0; //WinPieceOfCake
+    private int allDayLongSoundIdx = 0; //WinAllDayLongSound
+    private int worriedForAMinuteSoundIdx = 0; //WinWorriedForAMinute
+
 
     // The current level's play surface.
     private PushButtonSurface currentPlaySurface;
@@ -44,6 +49,8 @@ public class GameState : MonoBehaviour {
         ShowWinPattern,
         ShowingWinPattern,
         CollectPlayerGuesses,
+        WinLevel,
+        WaitForWinLevelSound,
         WinGame,
         LostRound,
         LostGame,
@@ -76,6 +83,22 @@ public class GameState : MonoBehaviour {
             else if (clip.name == "LostGameSound")
             {
                 lostGameSoundIdx = i;
+            }
+            else if (clip.name == "WinEasyPeasySound")
+            {
+                easyPeasySoundIdx = i;
+            }
+            else if (clip.name == "WinPieceOfCake")
+            {
+                pieceOfCakeSoundIdx = i;
+            }
+            else if (clip.name == "WinAllDayLongSound")
+            {
+                allDayLongSoundIdx = i;
+            }
+            else if (clip.name == "WinWorriedForAMinute")
+            {
+                worriedForAMinuteSoundIdx = i;
             }
         }
     }
@@ -119,7 +142,36 @@ public class GameState : MonoBehaviour {
                 currentPlaySurface.ClearPlayerGuesses();
 
                 // If there are more rounds in the current level then continue play otherwise transition to next level.
-                currentState = levelManager.HasMoreRounds ? State.GenerateWinPattern : State.NewLevel;
+                currentState = levelManager.HasMoreRounds ? State.GenerateWinPattern : State.WinLevel;
+                break;
+
+            case State.WinLevel:
+                switch (levelManager.CurrentLevel)
+                {
+                    case 1:
+                        audioSource.clip = soundEffects[easyPeasySoundIdx];
+                        break;
+                    case 2:
+                        audioSource.clip = soundEffects[pieceOfCakeSoundIdx];
+                        break;
+                    case 3:
+                        audioSource.clip = soundEffects[allDayLongSoundIdx];
+                        break;
+                    case 4:
+                        audioSource.clip = soundEffects[worriedForAMinuteSoundIdx];
+                        break;
+
+                }
+
+                audioSource.Play();
+                currentState = State.WaitForWinLevelSound;
+                break;
+
+            case State.WaitForWinLevelSound:
+                if (!audioSource.isPlaying)
+                {
+                    currentState = State.NewLevel;
+                }
                 break;
 
             case State.WaitForPlayerStartAction:
