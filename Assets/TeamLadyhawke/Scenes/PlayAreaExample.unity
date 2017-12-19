@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
+  m_SkyboxMaterial: {fileID: 2100000, guid: 95fabb40d662d6a4baffa2e4e638900f, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -5445,7 +5445,8 @@ Prefab:
       propertyPath: gameState
       value: 
       objectReference: {fileID: 853810108}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 64458990359121994, guid: 9d56e23f8c4f70b4083b69aa6235a442, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 9d56e23f8c4f70b4083b69aa6235a442, type: 2}
   m_IsPrefabParent: 0
 --- !u!1001 &865155404
@@ -5514,7 +5515,8 @@ Prefab:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: a8a92cc5970d8064e8f007a13d5bb147, type: 2}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 64458990359121994, guid: 9d56e23f8c4f70b4083b69aa6235a442, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 9d56e23f8c4f70b4083b69aa6235a442, type: 2}
   m_IsPrefabParent: 0
 --- !u!1001 &872672361
@@ -7047,7 +7049,8 @@ Prefab:
       propertyPath: powerButton
       value: 
       objectReference: {fileID: 419878045}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 64458990359121994, guid: 9d56e23f8c4f70b4083b69aa6235a442, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 9d56e23f8c4f70b4083b69aa6235a442, type: 2}
   m_IsPrefabParent: 0
 --- !u!1 &1346911178 stripped
@@ -7127,7 +7130,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1414210041}
   - component: {fileID: 1414210044}
-  - component: {fileID: 1414210043}
   - component: {fileID: 1414210042}
   m_Layer: 0
   m_Name: Ceiling
@@ -7181,20 +7183,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!64 &1414210043
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1414210040}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Convex: 0
-  m_InflateMesh: 0
-  m_SkinWidth: 0.01
-  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!33 &1414210044
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -11606,7 +11594,8 @@ Prefab:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: a8a92cc5970d8064e8f007a13d5bb147, type: 2}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 64458990359121994, guid: 9d56e23f8c4f70b4083b69aa6235a442, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 9d56e23f8c4f70b4083b69aa6235a442, type: 2}
   m_IsPrefabParent: 0
 --- !u!1001 &1923110567
