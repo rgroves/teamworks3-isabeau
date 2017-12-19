@@ -7,7 +7,6 @@ TagManager:
   - PushButton
   - PowerButton
   - Portal
-  - SkipButton
   layers:
   - Default
   - TransparentFX

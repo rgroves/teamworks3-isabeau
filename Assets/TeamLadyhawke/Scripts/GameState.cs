@@ -1,8 +1,13 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class GameState : MonoBehaviour {
+    public GameObject SkipButton;
+    public GameObject PlayAgainButton;
+    public GameObject ExitButton;
+
     // The number of levels for each game.
     public int NumberOfLevels = 1;
 
@@ -22,14 +27,13 @@ public class GameState : MonoBehaviour {
     private int readyForInputSoundIdx = 0;
     private int wonRoundSoundIdx = 0;
     private int lostRoundSoundIdx = 0;
-    private int lostGameSoundIdx = 0;
+    private int lostGameSoundIdx = 0; 
     private int easyPeasySoundIdx = 0; //WinEasyPeasySound
     private int pieceOfCakeSoundIdx = 0; //WinPieceOfCake
     private int allDayLongSoundIdx = 0; //WinAllDayLongSound
     private int worriedForAMinuteSoundIdx = 0; //WinWorriedForAMinute
     private int voiceOverPt1SoundIdx = 0; //VoiceOverPart1Sound
     private int voiceOverPt2SoundIdx = 0; //VoiceOverPart2Sound
-
 
     // The current level's play surface.
     private PushButtonSurface currentPlaySurface;
@@ -60,7 +64,9 @@ public class GameState : MonoBehaviour {
         WinGame,
         LostRound,
         LostGame,
-        EndGame
+        ShowEndGameUI,
+        EndGame,
+        ExitGame
     }
 
     // The current game state.
@@ -126,11 +132,15 @@ public class GameState : MonoBehaviour {
         switch (currentState)
         {
             case State.NewGame:
+                Debug.Log("in NewGame State!");
                 levelManager.NewGame(NumberOfLevels, NumberOfRounds);
                 currentState = State.Intro1;
                 break;
 
             case State.Intro1:
+                EnablePortale(true);
+                GameStartUIEnabled(true);
+                EndGameUIEnabled(false);
                 audioSource.clip = soundEffects[voiceOverPt1SoundIdx];
                 audioSource.Play();
                 currentState = State.WaitIntro1;
@@ -144,7 +154,7 @@ public class GameState : MonoBehaviour {
                 break;
 
             case State.Intro2:
-                RemoveIntroAssets(1);
+                EnablePortale(false);
 
                 audioSource.clip = soundEffects[voiceOverPt2SoundIdx];
                 audioSource.Play();
@@ -154,6 +164,7 @@ public class GameState : MonoBehaviour {
             case State.WaitIntro2:
                 if (!audioSource.isPlaying)
                 {
+                    GameStartUIEnabled(false);
                     currentState = State.NewLevel;
                 }
                 break;
@@ -290,7 +301,7 @@ public class GameState : MonoBehaviour {
                 break;
 
             case State.WinGame:
-                currentState = State.EndGame;
+                currentState = State.ShowEndGameUI;
                 break;
 
             case State.LostRound:
@@ -305,13 +316,23 @@ public class GameState : MonoBehaviour {
             case State.LostGame:
                 if (!audioSource.isPlaying)
                 {
-                    currentState = State.EndGame;
+                    currentState = State.ShowEndGameUI;
                 }
                 break;
 
+            case State.ShowEndGameUI:
+                EndGameUIEnabled(true);
+                currentState = State.EndGame;
+                break;
+
             case State.EndGame:
+                break;
+
+            case State.ExitGame:
 #if UNITY_EDITOR
                 UnityEditor.EditorApplication.isPlaying = false;
+#else
+                Application.Quit();
 #endif
                 break;
 
@@ -321,11 +342,54 @@ public class GameState : MonoBehaviour {
         }
     }
 
-    public void RemoveIntroAssets(int wait)
+    private void EndGameUIEnabled(bool enabled)
     {
-        Destroy(GameObject.FindGameObjectWithTag("Portal"), wait);
-        GameObject skipBtn = GameObject.FindGameObjectWithTag("SkipButton");
-        skipBtn.transform.parent.gameObject.layer = 8;
+        if (enabled)
+        {
+            PlayAgainButton.SetActive(true);
+            ExitButton.SetActive(true);
+        }
+        else
+        {
+            PlayAgainButton.SetActive(false);
+            ExitButton.SetActive(false);
+        }
+    }
+
+    public void EnablePortale(bool enabled)
+    {
+        GameObject portal = GameObject.FindGameObjectWithTag("Portal");
+
+        if (enabled)
+        {
+            portal.gameObject.layer = 0;
+
+            foreach (Transform child in portal.gameObject.GetComponentInChildren<Transform>())
+            {
+                child.gameObject.layer = 0;
+            }
+        }
+        else
+        {
+            portal.gameObject.layer = 8;
+
+            foreach (Transform child in portal.gameObject.GetComponentInChildren<Transform>())
+            {
+                child.gameObject.layer = 8;
+            }
+        }
+    }
+
+    public void GameStartUIEnabled(bool enabled)
+    {
+        if (enabled)
+        {
+            SkipButton.SetActive(true);
+        }
+        else
+        {
+            SkipButton.SetActive(false);
+        }
     }
 
 public void OnButtonPush(PushButton buttonPushed)
@@ -359,7 +423,20 @@ public void OnButtonPush(PushButton buttonPushed)
     public void OnSkipIntro()
     {
         audioSource.Stop();
-        RemoveIntroAssets(0);
+        GameStartUIEnabled(false);
+        EnablePortale(false);
         currentState = State.NewLevel;
+    }
+
+    public void OnPlayAgain()
+    {
+        EndGameUIEnabled(false);
+        currentState = State.NewGame;
+    }
+
+    public void OnExitGame()
+    {
+        EndGameUIEnabled(false);
+        currentState = State.ExitGame;
     }
 }
