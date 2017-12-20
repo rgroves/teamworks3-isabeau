@@ -18,9 +18,20 @@ public class EarthDestruct : StateMachineBehaviour {
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        Debug.Log("EarthDestruct: OnStateExit");
-        earth = GameObject.FindGameObjectWithTag("Earth");
-        earth.GetComponent<Animator>().Play("EarthSplosion");
+        Debug.Log("Planet960tris: EarthDestruct: OnStateExit, animator name: " + animator.gameObject.name);
+        if (animator.gameObject.name == "Planet960tris")
+        {
+            // This was called from Panet960tris Animator
+            Debug.Log("Planet960tris: EarthDestruct: OnStateExit");
+            animator.SetBool("Done", true);
+        }
+        else if(animator.gameObject.name == "DestructoRay")
+        {
+            // This was called from DestructoRay Animator
+            Debug.Log("DestructoRay: EarthDestruct: OnStateExit");
+            earth = GameObject.FindGameObjectWithTag("Earth");
+            earth.GetComponent<Animator>().SetTrigger("Kaboom");
+        }
     }
 
     // OnStateMove is called right after Animator.OnAnimatorMove(). Code that processes and affects root motion should be implemented here

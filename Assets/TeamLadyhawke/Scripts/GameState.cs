@@ -64,6 +64,7 @@ public class GameState : MonoBehaviour {
         WinGame,
         LostRound,
         LostGame,
+        WaitForDestruction,
         ShowEndGameUI,
         EndGame,
         ExitGame
@@ -318,6 +319,14 @@ public class GameState : MonoBehaviour {
                 if (!audioSource.isPlaying)
                 {
                     GameObject.FindGameObjectWithTag("DestructoRay").GetComponent<Animator>().SetTrigger("Fire");
+                    currentState = State.WaitForDestruction;
+                }
+                break;
+
+            case State.WaitForDestruction:
+                if (GameObject.FindGameObjectWithTag("Earth").GetComponent<Animator>().GetBool("Done"))
+                {
+                    GameObject.FindGameObjectWithTag("MainCamera").transform.parent.GetComponent<Animator>().SetTrigger("FloatDown");
                     currentState = State.ShowEndGameUI;
                 }
                 break;
