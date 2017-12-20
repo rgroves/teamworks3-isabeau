@@ -309,6 +309,7 @@ public class GameState : MonoBehaviour {
                 {
                     audioSource.clip = soundEffects[lostRoundSoundIdx];
                     audioSource.Play();
+                    GameObject.FindGameObjectWithTag("MainCamera").transform.parent.GetComponent<Animator>().SetTrigger("FloatUp");
                     currentState = State.LostGame;
                 }
                 break;
@@ -316,10 +317,9 @@ public class GameState : MonoBehaviour {
             case State.LostGame:
                 if (!audioSource.isPlaying)
                 {
+                    GameObject.FindGameObjectWithTag("DestructoRay").GetComponent<Animator>().SetTrigger("Fire");
                     currentState = State.ShowEndGameUI;
                 }
-
-                GameObject.FindGameObjectWithTag("MainCamera").transform.parent.GetComponent<Animator>().SetBool("FloatUp", true);
                 break;
 
             case State.ShowEndGameUI:
