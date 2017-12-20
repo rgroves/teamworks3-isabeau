@@ -318,6 +318,8 @@ public class GameState : MonoBehaviour {
                 {
                     currentState = State.ShowEndGameUI;
                 }
+
+                GameObject.FindGameObjectWithTag("MainCamera").transform.parent.GetComponent<Animator>().SetBool("FloatUp", true);
                 break;
 
             case State.ShowEndGameUI:

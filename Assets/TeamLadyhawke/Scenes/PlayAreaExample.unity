@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.000600132, g: 0.000600132, b: 0.000600132, a: 1}
+  m_IndirectSpecularColor: {r: 0.00068861287, g: 0.0009897968, b: 0.00068861287, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -86,7 +86,7 @@ LightmapSettings:
     m_PVRFilteringAtrousColorSigma: 1
     m_PVRFilteringAtrousNormalSigma: 1
     m_PVRFilteringAtrousPositionSigma: 1
-  m_LightingDataAsset: {fileID: 112000046, guid: 7c0dd2947e9909c45be2b0629b585ebd,
+  m_LightingDataAsset: {fileID: 112000050, guid: 7c0dd2947e9909c45be2b0629b585ebd,
     type: 2}
   m_UseShadowmask: 1
 --- !u!196 &4
@@ -109,6 +109,27 @@ NavMeshSettings:
     tileSize: 256
     accuratePlacement: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &33375490 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 177758, guid: 970dd4b9371394fb4890965f608d46fd, type: 2}
+  m_PrefabInternal: {fileID: 679416156}
+--- !u!95 &33375492
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 33375490}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 1e90159f91244ea4d8b3af0f3ceff51a, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
 --- !u!4 &53164199 stripped
 Transform:
   m_PrefabParentObject: {fileID: 4718497325164702, guid: 4e08e0a822c89484b9a7e6f807e49858,
@@ -2270,7 +2291,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &876761944
 Transform:
@@ -7277,7 +7298,7 @@ Prefab:
     m_Modifications:
     - target: {fileID: 457006, guid: f6f5203ed5ea2204d95508a9c981db2f, type: 2}
       propertyPath: m_LocalPosition.x
-      value: -150
+      value: -75
       objectReference: {fileID: 0}
     - target: {fileID: 457006, guid: f6f5203ed5ea2204d95508a9c981db2f, type: 2}
       propertyPath: m_LocalPosition.y
@@ -7285,7 +7306,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 457006, guid: f6f5203ed5ea2204d95508a9c981db2f, type: 2}
       propertyPath: m_LocalPosition.z
-      value: -150
+      value: -75
       objectReference: {fileID: 0}
     - target: {fileID: 457006, guid: f6f5203ed5ea2204d95508a9c981db2f, type: 2}
       propertyPath: m_LocalRotation.x
@@ -7397,7 +7418,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &1414210041
 Transform:
@@ -14729,7 +14750,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 10
+  far clip plane: 100
   field of view: 60
   orthographic: 0
   orthographic size: 5
