@@ -58,6 +58,7 @@ public class GameState : MonoBehaviour {
         GenerateWinPattern,
         ShowWinPattern,
         ShowingWinPattern,
+        WaitForInputSound,
         CollectPlayerGuesses,
         WinLevel,
         WaitForWinLevelSound,
@@ -265,13 +266,20 @@ public class GameState : MonoBehaviour {
             case State.ShowingWinPattern:
                 if (!currentPlaySurface.IsShowingWinPattern)
                 {
-                    currentState = State.CollectPlayerGuesses;
+                    currentState = State.WaitForInputSound;
                 }
 
                 if (currentState != State.ShowingWinPattern)
                 {
                     audioSource.clip = soundEffects[readyForInputSoundIdx];
                     audioSource.Play();
+                }
+                break;
+
+            case State.WaitForInputSound:
+                if (!audioSource.isPlaying)
+                {
+                    currentState = State.CollectPlayerGuesses;
                 }
                 break;
 
@@ -424,6 +432,12 @@ public void OnButtonPush(PushButton buttonPushed)
 
         if (currentState != State.WaitForPlayerStartAction)
         {
+            return;
+        }
+
+        if (currentPlaySurface.gameObject.transform != buttonPushed.gameObject.transform.parent)
+        {
+            // this is a different wall's power button press, ignore it
             return;
         }
 
