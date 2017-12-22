@@ -15592,6 +15592,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 4013d747e0c292643a096360af2dc9a7, type: 3}
   - {fileID: 8300000, guid: 117d170f873d340498b16228621ff2f5, type: 3}
   - {fileID: 8300000, guid: d00d127ee30e1b744b7216f43503fcd7, type: 3}
+  - {fileID: 8300000, guid: 3c30b5f31fa69cb46a7ced37394b252d, type: 3}
 --- !u!4 &853810109
 Transform:
   m_ObjectHideFlags: 0
@@ -20117,7 +20118,7 @@ GameObject:
   - component: {fileID: 1221653619}
   m_Layer: 0
   m_Name: DoomsdayDevice
-  m_TagString: Untagged
+  m_TagString: DoomsdayDevice
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -24966,7 +24967,7 @@ GameObject:
   - component: {fileID: 1576104438}
   m_Layer: 0
   m_Name: DestructoParticles
-  m_TagString: Untagged
+  m_TagString: DestructoParticles
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -25255,7 +25256,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: 1372273877
+  randomSeed: 243444390
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -28599,7 +28600,7 @@ ParticleSystem:
   moveWithTransform: 0
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: 57983225
+  randomSeed: 927170886
   InitialModule:
     serializedVersion: 3
     enabled: 1

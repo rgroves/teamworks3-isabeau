@@ -9,6 +9,8 @@ TagManager:
   - Portal
   - Earth
   - DestructoRay
+  - DestructoParticles
+  - DoomsdayDevice
   layers:
   - Default
   - TransparentFX

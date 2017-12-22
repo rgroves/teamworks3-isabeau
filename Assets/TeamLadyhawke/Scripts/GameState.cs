@@ -35,6 +35,8 @@ public class GameState : MonoBehaviour {
     private int voiceOverPt1SoundIdx = 0; //VoiceOverPart1Sound
     private int voiceOverPt2SoundIdx = 0; //VoiceOverPart2Sound
     private int voiceOverEndGameSoundIdx = 0; //VoiceOverEndGameSound
+    private int teleportSoundIdx = 0; //TeleportSound
+
 
     // The current level's play surface.
     private PushButtonSurface currentPlaySurface;
@@ -64,6 +66,8 @@ public class GameState : MonoBehaviour {
         WinLevel,
         WaitForWinLevelSound,
         WinGame,
+        SimulateTeleport,
+        WaitForEndGameVoiceover,
         LostRound,
         LostGame,
         WaitForDestruction,
@@ -123,8 +127,13 @@ public class GameState : MonoBehaviour {
             {
                 voiceOverPt2SoundIdx = i;
             }
-            else if (clip.name == "VoiceOverEndGameSound") {
+            else if (clip.name == "VoiceOverEndGameSound")
+            {
                 voiceOverEndGameSoundIdx = i;
+            }
+            else if (clip.name == "TeleportSound")
+            {
+                teleportSoundIdx = i;
             }
         }
     }
@@ -314,7 +323,41 @@ public class GameState : MonoBehaviour {
                 break;
 
             case State.WinGame:
-                currentState = State.ShowEndGameUI;
+                GameObject.FindGameObjectWithTag("DestructoParticles").SetActive(false);
+                GameObject portal = GameObject.FindGameObjectWithTag("Portal");
+
+                foreach (ParticleSystem ps in portal.GetComponentsInChildren<ParticleSystem>())
+                {
+                    ParticleSystem.EmissionModule e = ps.emission;
+                    e.enabled = false;
+                    e.enabled = true;
+                }
+
+                Vector3 cameraPosition = GameObject.FindGameObjectWithTag("MainCamera").transform.parent.transform.position;
+                cameraPosition.y -=2.5f;
+                portal.transform.SetPositionAndRotation(cameraPosition, Quaternion.identity);
+                EnablePortale(true);
+                audioSource.clip = soundEffects[teleportSoundIdx];
+                audioSource.Play();
+                currentState = State.SimulateTeleport;
+                break;
+
+            case State.SimulateTeleport:
+                if (!audioSource.isPlaying)
+                {
+                    GameObject.FindGameObjectWithTag("DoomsdayDevice").SetActive(false);
+                    EnablePortale(false);
+                    audioSource.clip = soundEffects[voiceOverEndGameSoundIdx];
+                    audioSource.Play();
+                    currentState = State.WaitForEndGameVoiceover;
+                }
+                break;
+
+            case State.WaitForEndGameVoiceover:
+                if (!audioSource.isPlaying)
+                {
+                    currentState = State.ShowEndGameUI;
+                }
                 break;
 
             case State.LostRound:
@@ -328,6 +371,7 @@ public class GameState : MonoBehaviour {
                 break;
 
             case State.LostGame:
+                GameObject.FindGameObjectWithTag("DestructoParticles").SetActive(true);
                 if (!audioSource.isPlaying)
                 {
                     GameObject.FindGameObjectWithTag("DestructoRay").GetComponent<Animator>().SetTrigger("Fire");
