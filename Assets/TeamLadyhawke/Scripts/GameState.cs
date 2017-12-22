@@ -259,7 +259,8 @@ public class GameState : MonoBehaviour {
 
             case State.GenerateWinPattern:
                 // Set number of button pushes that should be in the win pattern for this level/round.
-                numberOfButtonPushesToWin = (2 * currentPlaySurface.PushButtonCount) + (levelManager.CurrentRound - 2);
+                //numberOfButtonPushesToWin = (2 * currentPlaySurface.PushButtonCount) + (levelManager.CurrentRound - 2);
+                numberOfButtonPushesToWin = (currentPlaySurface.PushButtonCount) + levelManager.CurrentRound;
 
                 Debug.Log(">>> " + levelManager.CurrentLevelRound + ", Pushes To Win: " + numberOfButtonPushesToWin + " <<<");
 
