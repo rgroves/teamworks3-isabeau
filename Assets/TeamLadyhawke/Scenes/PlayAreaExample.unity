@@ -15572,8 +15572,8 @@ MonoBehaviour:
   SkipButton: {fileID: 1622343664}
   PlayAgainButton: {fileID: 881438443}
   ExitButton: {fileID: 1129596795}
-  NumberOfLevels: 1
-  NumberOfRounds: 1
+  NumberOfLevels: 4
+  NumberOfRounds: 3
   levelManager: {fileID: 853810110}
   pushButtonSurfaces:
   - {fileID: 1961916746}
