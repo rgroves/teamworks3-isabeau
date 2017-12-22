@@ -34,6 +34,7 @@ public class GameState : MonoBehaviour {
     private int worriedForAMinuteSoundIdx = 0; //WinWorriedForAMinute
     private int voiceOverPt1SoundIdx = 0; //VoiceOverPart1Sound
     private int voiceOverPt2SoundIdx = 0; //VoiceOverPart2Sound
+    private int voiceOverEndGameSoundIdx = 0; //VoiceOverEndGameSound
 
     // The current level's play surface.
     private PushButtonSurface currentPlaySurface;
@@ -121,6 +122,9 @@ public class GameState : MonoBehaviour {
             else if (clip.name == "VoiceOverPart2Sound")
             {
                 voiceOverPt2SoundIdx = i;
+            }
+            else if (clip.name == "VoiceOverEndGameSound") {
+                voiceOverEndGameSoundIdx = i;
             }
         }
     }
