@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameState : MonoBehaviour {
     public GameObject SkipButton;
@@ -37,6 +38,11 @@ public class GameState : MonoBehaviour {
     private int voiceOverEndGameSoundIdx = 0; //VoiceOverEndGameSound
     private int teleportSoundIdx = 0; //TeleportSound
 
+    // Time after destruction of earth 
+    private float timeAfterDestruction = 0f;
+    // Time to wait after destruction of earth on loss before going to credits
+    private float timeToWaitAfterDestruction = 2.5f;
+
 
     // The current level's play surface.
     private PushButtonSurface currentPlaySurface;
@@ -71,7 +77,6 @@ public class GameState : MonoBehaviour {
         LostRound,
         LostGame,
         WaitForDestruction,
-        ShowEndGameUI,
         EndGame,
         ExitGame
     }
@@ -155,7 +160,6 @@ public class GameState : MonoBehaviour {
             case State.Intro1:
                 EnablePortale(true);
                 GameStartUIEnabled(true);
-                EndGameUIEnabled(false);
                 audioSource.clip = soundEffects[voiceOverPt1SoundIdx];
                 audioSource.Play();
                 currentState = State.WaitIntro1;
@@ -357,7 +361,7 @@ public class GameState : MonoBehaviour {
             case State.WaitForEndGameVoiceover:
                 if (!audioSource.isPlaying)
                 {
-                    currentState = State.ShowEndGameUI;
+                    currentState = State.EndGame;
                 }
                 break;
 
@@ -383,17 +387,17 @@ public class GameState : MonoBehaviour {
             case State.WaitForDestruction:
                 if (GameObject.FindGameObjectWithTag("Earth").GetComponent<Animator>().GetBool("Done"))
                 {
-                    GameObject.FindGameObjectWithTag("MainCamera").transform.parent.GetComponent<Animator>().SetTrigger("FloatDown");
-                    currentState = State.ShowEndGameUI;
+                    if (timeAfterDestruction > timeToWaitAfterDestruction)
+                    {
+                        GameObject.FindGameObjectWithTag("MainCamera").transform.parent.GetComponent<Animator>().SetTrigger("FloatDown");
+                        currentState = State.EndGame;
+                    }
+                    timeAfterDestruction += Time.deltaTime;
                 }
                 break;
 
-            case State.ShowEndGameUI:
-                EndGameUIEnabled(true);
-                currentState = State.EndGame;
-                break;
-
             case State.EndGame:
+                SceneManager.LoadScene("GameOverCredits", LoadSceneMode.Single);
                 break;
 
             case State.ExitGame:
@@ -407,20 +411,6 @@ public class GameState : MonoBehaviour {
             default:
                 Debug.LogError("Unhandled game state: " + currentState.ToString());
                 break;
-        }
-    }
-
-    private void EndGameUIEnabled(bool enabled)
-    {
-        if (enabled)
-        {
-            PlayAgainButton.SetActive(true);
-            ExitButton.SetActive(true);
-        }
-        else
-        {
-            PlayAgainButton.SetActive(false);
-            ExitButton.SetActive(false);
         }
     }
 
@@ -462,7 +452,7 @@ public class GameState : MonoBehaviour {
 
 public void OnButtonPush(PushButton buttonPushed)
     {
-        Debug.Log("Push Button Pushed");
+        //Debug.Log("Push Button Pushed");
 
         if (currentState != State.CollectPlayerGuesses)
         {
@@ -477,7 +467,7 @@ public void OnButtonPush(PushButton buttonPushed)
 
     public void OnPowerButtonPush(GameObject buttonPushed)
     {
-        Debug.Log("Power Button Pushed");
+        //Debug.Log("Power Button Pushed");
 
         if (currentState != State.WaitForPlayerStartAction)
         {
@@ -500,17 +490,5 @@ public void OnButtonPush(PushButton buttonPushed)
         GameStartUIEnabled(false);
         EnablePortale(false);
         currentState = State.NewLevel;
-    }
-
-    public void OnPlayAgain()
-    {
-        EndGameUIEnabled(false);
-        currentState = State.NewGame;
-    }
-
-    public void OnExitGame()
-    {
-        EndGameUIEnabled(false);
-        currentState = State.ExitGame;
     }
 }
