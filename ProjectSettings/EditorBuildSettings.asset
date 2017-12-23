@@ -4,4 +4,13 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/TeamLadyhawke/Scenes/TitleScreen.unity
+    guid: fa7e65c8d49bd9b459d72e5527da5f32
+  - enabled: 1
+    path: Assets/TeamLadyhawke/Scenes/Main.unity
+    guid: 5eb77f7bb70b5fa4392e38afd3705c6d
+  - enabled: 1
+    path: Assets/TeamLadyhawke/Scenes/GameOverCredits.unity
+    guid: f1840be95e864b34ea2f5f7a9d7e95dc
